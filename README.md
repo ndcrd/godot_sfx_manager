@@ -53,13 +53,13 @@ Current iteration is a very basic, robust solution to use as Singleton or as a s
 
 
   > [!NOTE]
-  > You can drag and drop audio files into SFX Array.\
+  > You can drag and drop audio files into SFX Array.
   > 
-  > You can save and load SFX Library, SFX Array or Sound_Lib resources.\
+  > You can save and load SFX Library, SFX Array or Sound_Lib resources.
   > 
-  > You can edit set resource data by right click > edit, but you can't edit set dictionary keys. So you might want to recreate Key/Value Pair correctly.\
+  > You can edit set resource data by right click > edit, but you can't edit set dictionary keys. So you might want to recreate Key/Value Pair correctly.
   > 
-  > *Don't forget to click Add Key/Value Pair when adding new data to dictionary.  Sfx_sfx_managerManager\
+  > *Don't forget to click Add Key/Value Pair when adding new data to dictionary.  Sfx_sfx_managerManager
 
 
   ### Presets parameters:
