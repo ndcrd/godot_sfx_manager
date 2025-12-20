@@ -32,7 +32,26 @@ func _set_audio_parameters(audio_player: Object, sound_lib: Sound_Lib) -> void:
 	audio_player.playback_type = sound_lib.playback_type
 	audio_player.volume_db = linear_to_db(sound_lib.volume)
 
-#? Shall I move create \ delete players to public?
+## Set stream for a player, If [SfxArray] has 1 item, play 0 index, set [member track_index] to play [AudioStream] manually.
+func _set_stream(sfx_manager_player: Object, sound_lib: Sound_Lib, track_index: int = 0) -> void:
+	var sfx_libraries: Array[AudioStream] = sfx_library.libraries[str(sound_lib.library_name)].sounds
+
+	if sfx_libraries.size() == 1:
+		sfx_manager_player.stream = sfx_libraries[0]
+		return
+	sfx_manager_player.stream = sfx_libraries[track_index]
+
+## Set random stream for a player, If [SfxArray] has 1 item, play 0 index.
+func _set_stream_random(sfx_manager_player: Object, sound_lib: Sound_Lib) -> void:
+	var sfx_libraries: Array[AudioStream] = sfx_library.libraries[str(sound_lib.library_name)].sounds
+
+	if sfx_libraries.size() == 1:
+		sfx_manager_player.stream = sfx_libraries[0]
+		push_warning("There is a single sfx in a library. Consider using _set_stream() function")
+		return
+	sfx_manager_player.stream = sfx_libraries.pick_random()
+
+#region sfx manager public functions
 ## Create [AudioStreamPlayer] and with audio parameters preset. You can configure parameters in Presets SfxLibrary UI
 func create_audio_player(sound_lib: Sound_Lib) -> AudioStreamPlayer:
 	var sfx_manager_player = AudioStreamPlayer.new()
@@ -59,25 +78,6 @@ func delete_audio_player(sfx_manager_player: Object) -> void:
 		push_error("Audio player is null: \"%s\"" %sfx_manager_player)
 		return
 	sfx_manager_player.call_deferred("queue_free")
-
-## Set stream for a player, If [SfxArray] has 1 item, play 0 index, set [member track_index] to play [AudioStream] manually.
-func _set_stream(sfx_manager_player: Object, sound_lib: Sound_Lib, track_index: int = 0) -> void:
-	var sfx_libraries: Array[AudioStream] = sfx_library.libraries[str(sound_lib.library_name)].sounds
-
-	if sfx_libraries.size() == 1:
-		sfx_manager_player.stream = sfx_libraries[0]
-		return
-	sfx_manager_player.stream = sfx_libraries[track_index]
-
-## Set random stream for a player, If [SfxArray] has 1 item, play 0 index.
-func _set_stream_random(sfx_manager_player: Object, sound_lib: Sound_Lib) -> void:
-	var sfx_libraries: Array[AudioStream] = sfx_library.libraries[str(sound_lib.library_name)].sounds
-
-	if sfx_libraries.size() == 1:
-		sfx_manager_player.stream = sfx_libraries[0]
-		push_warning("There is a single sfx in a library. Consider using _set_stream() function")
-		return
-	sfx_manager_player.stream = sfx_libraries.pick_random()
 
 #region quick sfx manager functions
 
@@ -182,7 +182,7 @@ func switch_multi_sfx_clip(sfx_manager_player: Object, clip_index: int) -> void:
 	var pb: AudioStreamPlayback = sfx_manager_player.get_stream_playback()
 	pb.switch_to_clip(clip_index)
 
-## Use if need to switch [AudioStreamInteractive] tracks. @warning Not tested yet
+## Use if need to switch [AudioStreamInteractive] tracks.
 func switch_multi_sfx_track(sfx_manager_player: Object, sound_name: StringName, track_index: int = 0) -> void:
 	var sound_lib: Sound_Lib = _get_preset(sound_name)
 	if sfx_manager_player.playing:
